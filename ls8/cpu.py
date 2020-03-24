@@ -91,7 +91,6 @@ class CPU:
         self.REG[reg_num] = val
 
     def hlt(self):
-        print("HLT command encountered")
         self._running = False
 
     def prn(self):
@@ -105,19 +104,13 @@ class CPU:
             # read memory address in pc
             # store result in IC(instruction register)
             self.IR = self.ram_read(self.PC)
-            # execute command in IR
-            # print(f'IR: {self.IR}')
             # read the opcode and execute
             op = self.operations.get(self.IR)
             if op:
                 op()
             # read values of pc+1 and pc+2
-            # print(f'IR: {self.IR}')
             # store in operand_a/b for future use
             # operand_a = self.ram_read(self.PC + 1)
             # operand_b = self.ram_read(self.PC + 2)
-            # self.trace()
-            # print(f'current pc:{self.ram_read(self.PC)}')
-            # operation = self.operations[IR]
             # if IR does not advance PC, update PC to get next instruction
             self.PC += 1

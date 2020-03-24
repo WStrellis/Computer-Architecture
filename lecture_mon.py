@@ -7,26 +7,39 @@ SAVE = 4  # Save a value to a register
 PRINT_REGISTER = 5  # Print a value from a register
 ADD = 6  # regA += regB
 
-memory = [
-    PRINT_BEEJ,
-    SAVE,
-    65,
-    2,
-    SAVE,
-    20,
-    3,
-    ADD,
-    2,
-    3,
-    PRINT_REGISTER,
-    2,
-    HALT
-]
+memory = [None] * 256
 
 register = [0] * 8
 
 pc = 0
 running = True
+
+
+def load_memory(filename):
+    try:
+        with open(filename) as f:
+            for line in f:
+                # ignore comments
+                comment_split = line.split('#')
+                # strip whitespace
+                num = comment_split[0].strip()
+                # ignore blank lines
+                if num == '':
+                    continue
+                print(int(num, 2))
+
+    except FileNotFoundError:
+        print('file not found')
+        sys.exit(2)
+
+
+if len(sys.argv) != 2:
+    print("usage: file.py filename")
+    sys.exit(1)
+
+filename = sys.argv[1]
+load_memory(filename)
+
 
 while running:
     command = memory[pc]
