@@ -60,7 +60,13 @@ but you'll have to implement those three above instructions first!
 ## Step 0: IMPORTANT: inventory what is here!
 
 * Make a list of files here.
+  - cpu.py 
+  - ls8.py
+  - asm.py
 * Write a short 3-10-word description of what each file does.
+  -- cpu.py contains the logic for running the cpu 
+  -- ls8.py simulates a computer which sends commands to the cpu
+  -- asm.py converts python to machine code.
 * Note what has been implemented, and what hasn't.
 * Read this whole file.
 * Skim the spec.
