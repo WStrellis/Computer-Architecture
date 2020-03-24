@@ -32,26 +32,29 @@ class CPU:
         """writes data to ram at the specified address"""
         self.RAM[mar] = mdr
 
-    def load(self):
+    def load(self, file):
         """Load a program into memory."""
 
         address = 0
-
-        # For now, we've just hardcoded a program:
-
-        program = [
-            # From print8.ls8
-            0b10000010,  # LDI R0,8
-            0b00000000,  # store the next line in register[0]
-            0b00001000,  # the number 8
-            0b01000111,  # PRN R0
-            0b00000000,  # print the value from register[0]
-            0b00000001,  # HLT
-        ]
-
-        for instruction in program:
-            self.RAM[address] = instruction
+        program_file = open(file, 'r')
+        for line in program_file:
+            line = line.strip()
+            # remove comments
+            # line = line.split('#')[0]
+            # skip empty lines and lines with only a comment
+            if line == '' or line[0] == '#':
+                continue
+            # remove whitespace
+            # line = line.strip()
+            line = line[0:8]
+            # convert to int
+            val = int(line, 2)
+            # add to memory at address
+            self.ram_write(address, val)
+            # increment address
             address += 1
+
+        program_file.close()
 
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""

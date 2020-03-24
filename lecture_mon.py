@@ -16,6 +16,7 @@ running = True
 
 
 def load_memory(filename):
+    address = 0
     try:
         with open(filename) as f:
             for line in f:
@@ -26,7 +27,9 @@ def load_memory(filename):
                 # ignore blank lines
                 if num == '':
                     continue
-                print(int(num, 2))
+                val = int(num, 2)
+                memory[address] = val
+                address += 1
 
     except FileNotFoundError:
         print('file not found')
