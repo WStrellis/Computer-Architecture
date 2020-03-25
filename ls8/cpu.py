@@ -115,14 +115,6 @@ class CPU:
             IR = self.ram_read(self.PC)
             # convert to decimal
             op_code = int(IR, 2)
-            # get arguments for funtions from ram
-            # operand_a = self.ram_read(self.PC + 1)
-            # operand_b = self.ram_read(self.PC + 2)
-            # if the PC goes past the last instruction in RAM don't try to convert it to int
-            # if type operand_a == 'string':
-            #     operand_a = int(operand_a, 2)
-            # if type operand_b == 'string':
-            #     operand_b = int(operand_b, 2)
 
             # read the opcode and execute
             self.operations[op_code](IR)
