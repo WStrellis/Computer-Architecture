@@ -14,6 +14,7 @@ class CPU:
         self.REG = [0] * 8
         self.IR = 0
         self._running = True
+        self.SP = 0xf4
 
         self.REG[7] = 0xF4
 
@@ -22,8 +23,32 @@ class CPU:
             162: lambda x: self.alu(x),
             1: lambda x: self.hlt(),
             130: lambda x: self.ldi(),
-            71: lambda x: self.prn()
+            71: lambda x: self.prn(),
+            70: lambda x: self.pop(),
+            69: lambda x: self.push()
         }
+
+    def push(self):
+        """take value from register and add  to the stack"""
+        # decrement SP
+        self.SP -= 1
+        # get value in register
+        reg_num = int(self.ram_read(self.PC + 1), 2)
+        val = self.REG[reg_num]
+        # store value in stack
+        self.ram_write(self.SP, val)
+
+    def pop(self):
+        """ remove an item from the stack and add to register"""
+
+        # get register number from ram
+        reg_num = int(self.ram_read(self.PC + 1), 2)
+        # get value from stack
+        val = self.ram_read(self.SP)
+        # store value in register
+        self.REG[reg_num] = val
+        # increment SP
+        self.SP += 1
 
     def ram_read(self, mar):
         """Read and return the value at the specified address in memory"""
