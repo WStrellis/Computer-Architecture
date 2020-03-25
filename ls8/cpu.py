@@ -18,7 +18,8 @@ class CPU:
         self.REG[7] = 0xF4
 
         self.operations = {
-            147: 'ADD',
+            147: self.alu,
+            162: self.alu,
             1: self.hlt,
             130: self.ldi,
             71: self.prn
@@ -56,14 +57,23 @@ class CPU:
 
         program_file.close()
 
-    def alu(self, op, reg_a, reg_b):
+    def alu(self):
         """ALU operations."""
+        op = self.IR
+        # values from specified ram address
+        reg_a = self.ram_read(self.PC + 1)
+        # val_a = self.REG[reg_a]
+        reg_b = self.ram_read(self.PC + 2)
+        # val_b = self.REG[reg_b]
 
-        if op == "ADD":
+        if op == 147:  # ADD
             self.REG[reg_a] += self.REG[reg_b]
-        # elif op == "SUB": etc
+        elif op == 162:  # MUL
+            self.REG[reg_a] *= self.REG[reg_b]
         else:
             raise Exception("Unsupported ALU operation")
+
+        self.PC += 3
 
     def trace(self):
         """
@@ -92,6 +102,7 @@ class CPU:
         val = self.ram_read(self.PC + 2)
         # set  register to value
         self.REG[reg_num] = val
+        self.PC += 3
 
     def hlt(self):
         self._running = False
@@ -100,6 +111,7 @@ class CPU:
         reg_num = self.ram_read(self.PC + 1)
         val = self.REG[reg_num]
         print(val)
+        self.PC += 2
 
     def run(self):
         """Run the CPU."""
@@ -109,11 +121,4 @@ class CPU:
             self.IR = self.ram_read(self.PC)
             # read the opcode and execute
             op = self.operations.get(self.IR)
-            if op:
-                op()
-            # read values of pc+1 and pc+2
-            # store in operand_a/b for future use
-            # operand_a = self.ram_read(self.PC + 1)
-            # operand_b = self.ram_read(self.PC + 2)
-            # if IR does not advance PC, update PC to get next instruction
-            self.PC += 1
+            op()
