@@ -57,6 +57,18 @@ class TestCase(unittest.TestCase):
         result = self.capturedOutput.getvalue().strip()
         self.assertEqual(result, '72', f'Expected 72 but got {result}')
 
+    def test_stack(self):
+        """should print the numbers 2,4,1  to the console"""
+        cpu = CPU()
+
+        program_file = './ls8/examples/stack.ls8'
+        cpu.load(program_file)
+        cpu.run()
+        expected = '2\n4\n1'
+        result = self.capturedOutput.getvalue().strip()
+        self.assertEqual(result, expected,
+                         f'Expected {expected} but got {result}')
+
 
 if __name__ == '__main__':
     unittest.main()
