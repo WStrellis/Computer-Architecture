@@ -49,9 +49,9 @@ class CPU:
             # line = line.strip()
             line = line[0:8]
             # convert to int
-            val = int(line, 2)
+            # val = int(line, 2)
             # add to memory at address
-            self.ram_write(address, val)
+            self.ram_write(address, line)
             # increment address
             address += 1
 
@@ -113,12 +113,23 @@ class CPU:
         print(val)
         self.PC += 2
 
+    def advance_pc(self):
+        """ use first two bits of op code to determine how far
+        to advance the PC"""
+        op_bits = self.IR[:2]
+        op_bits = int(op_bits, 2)
+        self.PC += op_bits + 1
+
     def run(self):
         """Run the CPU."""
         while self._running:
             # read memory address in pc
             # store result in IC(instruction register)
             self.IR = self.ram_read(self.PC)
+            # convert IR to decimal format
+            op_code = int(self.IR, 2)
             # read the opcode and execute
-            op = self.operations.get(self.IR)
+            op = self.operations.get(op_code)
             op()
+            # increment PC
+            self.advance_pc()

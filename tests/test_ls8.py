@@ -20,10 +20,10 @@ class TestCase(unittest.TestCase):
 
         program_file = './tests/test.txt'
         cpu.load(program_file)
-        self.assertEqual(cpu.RAM[0], 1)
-        self.assertEqual(cpu.RAM[1], 2)
-        self.assertEqual(cpu.RAM[2], 3)
-        self.assertEqual(cpu.RAM[3], 4)
+        self.assertEqual(cpu.RAM[0], '00000001')
+        self.assertEqual(cpu.RAM[1], '00000010')
+        self.assertEqual(cpu.RAM[2], '00000011')
+        self.assertEqual(cpu.RAM[3], '00000100')
 
     def test_print8(self):
         """should print the number 8 to the console"""
