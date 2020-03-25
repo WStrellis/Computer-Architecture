@@ -25,6 +25,18 @@ class TestCase(unittest.TestCase):
         self.assertEqual(cpu.RAM[2], '00000011')
         self.assertEqual(cpu.RAM[3], '00000100')
 
+    def test_advance_pc(self):
+        """ should advance PC correctly"""
+        cpu = CPU()
+
+        self.assertEqual(cpu.PC, 0, f'Expected {cpu.PC} to eq 0')
+        cpu.advance_pc('00')
+        self.assertEqual(cpu.PC, 1, f'Expected {cpu.PC} to eq 1')
+        cpu.advance_pc('01')
+        self.assertEqual(cpu.PC, 3, f'Expected {cpu.PC} to eq 3')
+        cpu.advance_pc('10')
+        self.assertEqual(cpu.PC, 6, f'Expected {cpu.PC} to eq 6')
+
     def test_print8(self):
         """should print the number 8 to the console"""
         cpu = CPU()
