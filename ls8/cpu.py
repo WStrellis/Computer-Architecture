@@ -25,7 +25,9 @@ class CPU:
             130: lambda x: self.ldi(),
             71: lambda x: self.prn(),
             70: lambda x: self.pop(),
-            69: lambda x: self.push()
+            69: lambda x: self.push(),
+            80: lambda x: self.call(),
+            84: lambda x: self.jmp()
         }
 
     def push(self):
@@ -125,12 +127,21 @@ class CPU:
         val = self.REG[loc]
         print(val)
 
+    def call(self):
+        pass
+
+    def jmp(self):
+        pass
+
     def advance_pc(self, ir):
-        """ use first two bits of op code to determine how far
+        """ reads instruction register and determines how far to advance the PC
+            uses fourth bit of op code to determine whether or not to advance the PC
+         use first two bits of op code to determine how far
         to advance the PC"""
-        op_bits = ir[:2]
-        op_bits = int(op_bits, 2)
-        self.PC += op_bits + 1
+        if ir[3] is '0':
+            op_bits = ir[:2]
+            op_bits = int(op_bits, 2)
+            self.PC += op_bits + 1
 
     def run(self):
         """Run the CPU."""
