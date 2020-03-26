@@ -30,12 +30,33 @@ class TestCase(unittest.TestCase):
         cpu = CPU()
 
         self.assertEqual(cpu.PC, 0, f'Expected {cpu.PC} to eq 0')
-        cpu.advance_pc('00')
+        cpu.advance_pc('0000')
         self.assertEqual(cpu.PC, 1, f'Expected {cpu.PC} to eq 1')
-        cpu.advance_pc('01')
+        cpu.advance_pc('0100')
         self.assertEqual(cpu.PC, 3, f'Expected {cpu.PC} to eq 3')
-        cpu.advance_pc('10')
+        cpu.advance_pc('1000')
         self.assertEqual(cpu.PC, 6, f'Expected {cpu.PC} to eq 6')
+
+    def test_ret(self):
+        """should set PC and SP"""
+        cpu = CPU()
+
+        cpu.RAM[240] = 10
+        cpu.SP = 240
+        cpu.ret()
+        self.assertEqual(cpu.PC, 10)
+        self.assertEqual(cpu.SP, 241)
+
+    def test_call(self):
+        """should push next instruction onto stack and then set PC"""
+        cpu = CPU()
+
+        cpu.RAM[1] = '00000001'
+        cpu.RAM[2] = '00001111'
+        cpu.REG[1] = 4
+        cpu.call()
+        self.assertEqual(cpu.SP, 243)
+        self.assertEqual(cpu.PC, 4)
 
     def test_print8(self):
         """should print the number 8 to the console"""
@@ -65,6 +86,18 @@ class TestCase(unittest.TestCase):
         cpu.load(program_file)
         cpu.run()
         expected = '2\n4\n1'
+        result = self.capturedOutput.getvalue().strip()
+        self.assertEqual(result, expected,
+                         f'Expected {expected} but got {result}')
+
+    def test_subroutines(self):
+        """should print the numbers 20,30,36,60  to the console"""
+        cpu = CPU()
+
+        program_file = './ls8/examples/call.ls8'
+        cpu.load(program_file)
+        cpu.run()
+        expected = '20\n30\n36\n60'
         result = self.capturedOutput.getvalue().strip()
         self.assertEqual(result, expected,
                          f'Expected {expected} but got {result}')
