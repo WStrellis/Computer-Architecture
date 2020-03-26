@@ -19,15 +19,16 @@ class CPU:
         self.REG[7] = 0xF4
 
         self.operations = {
-            147: lambda x: self.alu(x),
+            # 147: lambda x: self.alu(x),
             162: lambda x: self.alu(x),
+            160: lambda x: self.alu(x),
             1: lambda x: self.hlt(),
             130: lambda x: self.ldi(),
             71: lambda x: self.prn(),
             70: lambda x: self.pop(),
             69: lambda x: self.push(),
             80: lambda x: self.call(),
-            84: lambda x: self.jmp()
+            17: lambda x: self.ret()
         }
 
     def push(self):
@@ -86,7 +87,7 @@ class CPU:
 
         op_a = int(self.ram_read(self.PC + 1), 2)
         op_b = int(self.ram_read(self.PC + 2), 2)
-        if ir == 147:  # ADD
+        if ir == 160:  # ADD
             self.REG[op_a] += self.REG[op_b]
         elif ir == 162:  # MUL
             self.REG[op_a] *= self.REG[op_b]
@@ -128,17 +129,25 @@ class CPU:
         print(val)
 
     def call(self):
-        pass
+        """ can call saved functions"""
+        # push next instruction onto stack
+        self.SP -= 1
+        self.ram_write(self.SP, self.PC + 2)
+        # set PC to given reg#
+        reg_num = int(self.ram_read(self.PC + 1), 2)
+        self.PC = self.REG[reg_num]
 
-    def jmp(self):
-        pass
+    def ret(self):
+        """pop value from top of stack and store in PC"""
+        self.PC = self.ram_read(self.SP)
+        self.SP += 1
 
     def advance_pc(self, ir):
         """ reads instruction register and determines how far to advance the PC
             uses fourth bit of op code to determine whether or not to advance the PC
          use first two bits of op code to determine how far
         to advance the PC"""
-        if ir[3] is '0':
+        if ir[3] == '0':
             op_bits = ir[:2]
             op_bits = int(op_bits, 2)
             self.PC += op_bits + 1
