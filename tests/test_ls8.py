@@ -102,6 +102,18 @@ class TestCase(unittest.TestCase):
         self.assertEqual(result, expected,
                          f'Expected {expected} but got {result}')
 
+    def test_sprint_challenge(self):
+        """should print the numbers 1,4,5  to the console"""
+        cpu = CPU()
+
+        program_file = './ls8/examples/sprint_challenge.ls8'
+        cpu.load(program_file)
+        cpu.run()
+        expected = '1\n4\n5'
+        result = self.capturedOutput.getvalue().strip()
+        self.assertEqual(result, expected,
+                         f'Expected {expected} but got {result}')
+
 
 if __name__ == '__main__':
     unittest.main()
