@@ -10,8 +10,8 @@ class CPU:
         """Construct a new CPU."""
         self.RAM = [0] * 256
         self.PC = 0
-        self.FL = [0] * 8
         self.REG = [0] * 8
+        self.FL = [0] * 8
         self.IR = 0
         self._running = True
         self.SP = 0xf4
@@ -19,7 +19,6 @@ class CPU:
         self.REG[7] = 0xF4
 
         self.operations = {
-            # 147: lambda x: self.alu(x),
             162: lambda x: self.alu(x),
             160: lambda x: self.alu(x),
             1: lambda x: self.hlt(),
@@ -28,7 +27,11 @@ class CPU:
             70: lambda x: self.pop(),
             69: lambda x: self.push(),
             80: lambda x: self.call(),
-            17: lambda x: self.ret()
+            17: lambda x: self.ret(),
+            167: lambda x: self.alu(x),  # CMP
+            84: lambda x: self.jmp(),
+            85: lambda x: self.jeq(),
+            86: lambda x: self.jne(),
         }
 
     def push(self):
@@ -87,10 +90,17 @@ class CPU:
 
         op_a = int(self.ram_read(self.PC + 1), 2)
         op_b = int(self.ram_read(self.PC + 2), 2)
+
         if ir == 160:  # ADD
             self.REG[op_a] += self.REG[op_b]
         elif ir == 162:  # MUL
             self.REG[op_a] *= self.REG[op_b]
+
+        elif ir == 167:  # CMP
+            if self.REG[op_a] == self.REG[op_b]:
+                self.FL[7] = 1
+            else:
+                self.FL[7] = 0
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -113,6 +123,27 @@ class CPU:
             print(" %02X" % self.REG[i], end='')
 
         print()
+
+    def jmp(self):
+        """set PC to address at given register"""
+        reg_num = int(self.ram_read(self.PC + 1), 2)
+        self.PC = self.REG[reg_num]
+
+    def jeq(self):
+        """if FL[7] is True set PC to value at given register"""
+        if self.FL[7] == 1:
+            reg_num = int(self.ram_read(self.PC + 1), 2)
+            self.PC = self.REG[reg_num]
+        else:
+            self.PC += 2
+
+    def jne(self):
+        """ if FL[7] is False set PC to value at given register"""
+        if self.FL[7] == 0:
+            reg_num = int(self.ram_read(self.PC + 1), 2)
+            self.PC = self.REG[reg_num]
+        else:
+            self.PC += 2
 
     def ldi(self):
         reg_num = int(self.ram_read(self.PC + 1), 2)
